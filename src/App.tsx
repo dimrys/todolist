@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TasksType, TodoList} from "./TodoList";
 import {v1} from 'uuid';
+import AddItemForm from "./AddIItemForm";
 
 type TodoListType = {
     id: string
@@ -72,7 +73,6 @@ function App() {
 
     function changStatus(taskID: string, isDone: boolean, todoListId:string) {
         const todoListTasks = tasks[todoListId]
-
         const task: TasksType| undefined = todoListTasks.find(t => t.id === taskID )
         if (task){
             task.isDone = isDone
@@ -89,21 +89,44 @@ function App() {
         // setTasks(newTasks)
 
     }
-    
+
     function removeTodoList(totoListID: string) {
         setTodoList(todoLists.filter(tl => tl.id !==totoListID))
         delete tasks[totoListID]
         setTasks({...tasks})
     }
+    
+    function changeTodoListTitle(totoListID: string, newTitle: string) {
+        const todoList = todoLists.find(tl => tl.id === totoListID)
+        if (todoList) {
+            todoList.title = newTitle
+            setTodoList([...todoLists])
+        }
+    }
+    
 
+    function addTodoList(title: string) {
+        const newTodoListID = v1()
+        const newTodoList: TodoListType = {
+            id:newTodoListID, title: title, filter: "all"
+        }
+        setTodoList([newTodoList, ...todoLists])
+        setTasks({...tasks, [newTodoListID]: []})
 
+    }
 
+    function changeTaskTitle(taskID: string, title: string, todoListId:string) {
+        const todoListTasks = tasks[todoListId]
+        const task: TasksType| undefined = todoListTasks.find(t => t.id === taskID )
+        if (task){
+            task.title = title
+            setTasks({...tasks})
+        }}
 
 
     return (
-
-
         <div className="App">
+            <AddItemForm addItem ={addTodoList} />
             {
                 todoLists.map(tl => {
                     let taskForToDoList = tasks[tl.id]
@@ -125,12 +148,12 @@ function App() {
                                   changStatus = {changStatus}
                                   filter = {tl.filter}
                                   removeTodoList={removeTodoList}
-
+                                  changeTaskTitle = {changeTaskTitle}
+                                  changeTodoListTitle = {changeTodoListTitle}
                         />
                     )
                 })
             }
-
         </div>
     );
 }
