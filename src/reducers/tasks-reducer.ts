@@ -36,8 +36,10 @@ export type ActionType =
     | AddTodoListActionType
     | RemoveTodoListActionType
 
+const initialState: TaskStateType = {}
 
-export const taskReducer = (state: TaskStateType, action: ActionType): TaskStateType => {
+
+export const taskReducer = (state = initialState, action: ActionType): TaskStateType => {
     switch (action.type) {
         case "REMOVE-TASK": {
             let copyState = {...state}
