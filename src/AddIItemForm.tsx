@@ -6,14 +6,17 @@ type AddItemFormPropsType = {
     addItem: (title: string) => void
 
 }
-
-function AddItemForm(props:AddItemFormPropsType) {
+export const AddItemForm = React.memo((props:AddItemFormPropsType) => {
+    console.log("AddItemForm called")
     let [titleTask, setTitleTask] = useState<string>('')
     let [error, setError]  = useState<string| null>( null)
 
     const onChangTitleTask = (e: ChangeEvent<HTMLInputElement> ) => {
+        if(error != null) {
+            setError(null)
+        }
         setTitleTask(e.currentTarget.value)
-        setError(null)
+
     }
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {if(e.key === 'Enter') addItem()}
 
@@ -44,6 +47,6 @@ function AddItemForm(props:AddItemFormPropsType) {
         </div>
     )
 
-}
+})
 
-export default AddItemForm
+
