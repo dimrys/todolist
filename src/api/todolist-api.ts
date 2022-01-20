@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, {AxiosResponse} from 'axios'
 
 const innstance = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',
@@ -25,13 +25,13 @@ export const todolistAPI = {
         return innstance.get<GetTasksResponse>(`todo-lists/${todolistId}/tasks`)
     },
     createTask(todolistId: string, title: string) {
-        return innstance.post<ResponseType<TaskType>>(`todo-lists/${todolistId}/tasks`, {title})
+        return innstance.post<ResponseType<{ item: TaskType }>>(`todo-lists/${todolistId}/tasks`, {title})
     },
     updateTask(todolistId: string, taskId: string, model:UpdateTaskModalType ) {
-        return innstance.put<ResponseType<TaskType>>(`todo-lists/${todolistId}/tasks/${taskId}`, model )
+        return innstance.put<UpdateTaskModalType, AxiosResponse<ResponseType<{ item: TaskType }>>>(`todo-lists/${todolistId}/tasks/${taskId}`, model )
     },
-    deleteTask(todolistId: string, taskId: string) {
-        return innstance.delete<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`)
+    deleteTask(payload: { todolistId: string, taskId: string }) {
+        return innstance.delete<ResponseType>(`todo-lists/${payload.todolistId}/tasks/${payload.taskId}`)
     }
 }
 
@@ -79,8 +79,8 @@ export type TaskType = {
 export type UpdateTaskModalType = {
     title: string
     description: string
-    status: number
-    priority: number
+    status: TaskStatuses
+    priority: TaskPriorities
     startDate: string
     deadline: string
 }

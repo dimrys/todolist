@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect} from "react";
 import {Button, IconButton} from "@material-ui/core";
 import {Delete} from "@material-ui/icons";
 import {AddItemForm} from "./AddIItemForm";
@@ -6,6 +6,8 @@ import {EditableSpan} from "./EditableSpan";
 import {Task} from "./Task";
 import {TaskStatuses, TaskType} from "./api/todolist-api";
 import {FilterValueType} from "./reducers/tl-reducer";
+import {useDispatch} from "react-redux";
+import {fetchTasksTC} from "./reducers/tasks-reducer";
 
 
 type TodoListPropsType = {
@@ -22,6 +24,12 @@ type TodoListPropsType = {
     changeTaskTitle: (taskID: string, title: string, todoListId:string) => void
 }
 export const TodoList = React.memo((props: TodoListPropsType) => {
+
+    useEffect(() => {
+        dispatch(fetchTasksTC(props.id))
+    }, [])
+
+    const dispatch = useDispatch()
 
     let taskForToDoList = props.tasks
     if(props.filter === "active"){
@@ -42,6 +50,7 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
     }, [props.removeTodoList, props.id])
 
     const changeTodoListTitle = useCallback((newTitle:string) => {
+
         props.changeTodoListTitle(props.id, newTitle)
     }, [props.changeTodoListTitle, props.id])
 
